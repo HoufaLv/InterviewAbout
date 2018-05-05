@@ -31,7 +31,7 @@ public class MyJob implements Job {
     }
 }
 ```
-- 调度任务
+##### 使用SimpleTrigger 调度任务
 ```
   //1.创建任务
   JobDetail jobDetail = JobBuilder.newJob(MyJob.class).build();
@@ -48,4 +48,17 @@ public class MyJob implements Job {
   //5.调度任务,需要任务和触发器两个参数
   scheduler.scheduleJob(jobDetail,trigger);
   scheduler.start();
+```
+##### 使用CronTrigger 调度任务
+```
+  //使用CronTriiger 来实现任务调度,间隔1秒  
+  JobDetail jobDetail = JobBuilder.newJob(MyJob.class).build();
+  CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0/1 * * * * ? *");
+  CronTrigger cronTrigger = TriggerBuilder.newTrigger().withSchedule(cronScheduleBuilder).build();
+
+  Scheduler scheduler = new StdSchedulerFactory().getScheduler();
+  scheduler.scheduleJob(jobDetail,cronTrigger);
+  scheduler.start();
+
+  System.in.read();
 ```
