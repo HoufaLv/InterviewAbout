@@ -64,7 +64,78 @@ public class MyJob implements Job {
 ```
 
 ### Cron表达式
-> s m h d m w y
+> s m h d m w y -> 对应cron表达式中的 *
 
 ### Spring Quartz
-##### spring task
+##### 基于Runable 接口的spring task
+- 需要在配置文件中创建 Bean 节点
+```
+<bean id="poolTaskScheduler" class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler">
+    <property name="poolSize" value="6"/>
+    <property name="threadNamePrefix" value="spring-task-thred-"/>
+</bean>
+```
+- 类需要实现Runable 接口
+- 执行任务调度
+```
+  @RunWith(SpringJUnit4ClassRunner.class)
+  @ContextConfiguration(locations = "classpath:spring-task.xml")
+  public class SpringTaskTest {
+
+      //需要注入在配置文件中配置的类
+      @Autowired
+      private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+
+      @Test
+      public void test() throws IOException {
+
+          //创建任务类
+          SpringRunableTask springTask = new SpringRunableTask();
+          threadPoolTaskScheduler.schedule(springTask,new CronTrigger("0/1 * * * * *"));
+
+          System.in.read();
+      }
+
+  }
+```
+- 几种不同的调用方案
+```
+  //立即执行任务
+  taskScheduler.execute(new RunableImpl());
+
+  //在指定时间执行任务
+  taskScheduler.schedule(new RunableImpl(),new Date(System.currentTimeMillis()+3000));
+
+  //延迟循环执行任务
+  taskScheduler.scheduleWithFixedDelay(new RunableImpl(),10000);
+
+  //从指定的时间开始延迟循环执行任务
+  taskScheduler.scheduleWithFixedDelay(new RunableImpl(),new Date(),1000);
+
+  //按照固定间隔执行任务
+  taskScheduler.scheduleAtFixedRate(new RunableImpl(),1000);
+
+  //从指定时间按照固定间隔执行任务
+  taskScheduler.scheduleAtFixedRate(new RunableImpl(),new Date(),1000);
+
+  //基于Cron表达式执行任务
+  taskScheduler.schedule(new RunableImpl(),new CronTrigger("0/5 * * * * *"));
+
+  //使用PeriodicTrigger执行任务
+  //每2秒执行一次任务，首次延迟2秒
+  PeriodicTrigger periodicTrigger = new PeriodicTrigger(2,TimeUnit.SECONDS);
+  periodicTrigger.setInitialDelay(2);
+  taskScheduler.schedule(new RunableImpl(),periodicTrigger);
+```
+
+##### 基于注解的 Spring task
+- 在配置文件中添加自动扫描,定义调度者,开启基于注解的任务调度.
+```
+  <!--开启自动扫描-->
+  <context:component-scan base-package="com.iw"/>
+  <!--定义调度者-->
+  <task:scheduler id="scheduler" pool-size="10"/>
+  <!--开启基于注解的任务调度-->
+  <task:annotation-driven scheduler="scheduler"/>
+```
+-
