@@ -16,19 +16,17 @@ public class HelloController {
      */
     @GetMapping("/home")
     public String method(Model model){
-
-
         int[] numbers = new int[]{1, 2, 3, 4};
 
         model.addAttribute("name","oli");
         model.addAttribute("numbers",Arrays.asList(numbers));
         model.addAttribute("id",1);
 
-        return "views/1";
+        return "test/1";
     }
 
     @GetMapping("/testThymeleaf")
     public String method(){
-        return "user/index";
+        return "test/1";
     }
 }

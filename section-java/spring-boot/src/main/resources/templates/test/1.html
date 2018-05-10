@@ -28,7 +28,11 @@
     <h5>重写url中使用变量</h5>
     <a th:href="@{/home/{id}/edit(id=${id})}"></a>
 
+    <h5 class="btn btn-primary">三元表达式</h5>
+    <h1 class="text text-danger" th:text="${id==5} ? ${id} : '5'"></h1>
 
+    <h5 class="btn btn-primary">*{}</h5>
+    <h1 th:text="*{id}"></h1>
 </div>
 </body>
 </html>
