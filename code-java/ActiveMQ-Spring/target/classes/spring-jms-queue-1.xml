@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
+    <!--队列模型-->
+
+    <!--1.创建ActiveMQ 连接工厂-->
+    <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61616"/>
+    </bean>
+    <!--2.创建spring 连接工厂-->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="activeMQConnectionFactory"/>
+    </bean>
+
+    <bean id="destination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg index="0" value="iw-queue"></constructor-arg>
+    </bean>
+
+    <!--3.配置JmsTemplate-->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="defaultDestination" ref="destination"/>
+    </bean>
+
+    <!--4.配置监听器,在容器启动的时候,就会自动去监听队列-->
+    <bean id="springQueueListener" class="com.iw.consumer.ActiveMQSpringConsumer1"/>
+
+    <!--5.配置容器监听器-->
+    <bean id="messageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destinationName" value="iw-queue"/>
+        <property name="messageListener" ref="springQueueListener"/>
+    </bean>
+
+
+
+</beans>

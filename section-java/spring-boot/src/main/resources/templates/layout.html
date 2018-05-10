@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title layout:title-pattern="$LAYOUT_TITLE / $CONTENT_TITLE"> 系统 </title>
+</head>
+<body>
+    <div>这个是标题,固定内容</div>
+
+    <div layout:fragment="content">
+        在这里添加动态内容
+    </div>
+
+    <div>这个是页脚,固定内容</div>
+    <script src="webjars/jquery/jquery.min.js"></script>
+    <script layout:fragment="jquery"></script>
+</body>
+</html>
