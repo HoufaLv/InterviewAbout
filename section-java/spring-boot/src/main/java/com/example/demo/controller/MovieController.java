@@ -17,16 +17,12 @@ public class MovieController {
     // TODO: 2018/5/10 0010 使用mybatis框架从数据库中查出movie表中的数据传到表现层
     // TODO: 2018/5/10 0010 记录日志
 
-    private Logger logger = LoggerFactory.getLogger(MovieController.class);
-
     @Autowired
     private MovieService movieService;
 
     @GetMapping("/{id}")
     public Movie viewMovieById(@PathVariable Integer id){
         Movie movie = movieService.selectById(id);
-        logger.info("查询 movie 对象 {} ",movie);
-
         return movie;
     }
 }
