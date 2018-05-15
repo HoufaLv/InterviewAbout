@@ -8,4 +8,8 @@
         from movie
         where id = #{id}
     </select>
+    <select id="selectAll" resultType="com.example.demo.entity.Movie">
+        select *
+        from movie
+    </select>
 </mapper>

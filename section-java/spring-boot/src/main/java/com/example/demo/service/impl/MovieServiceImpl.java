@@ -4,10 +4,14 @@ import com.example.demo.cache.RedisCacheHelper;
 import com.example.demo.entity.Movie;
 import com.example.demo.mapper.MovieMapper;
 import com.example.demo.service.MovieService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MovieServiceImpl implements MovieService {
@@ -40,4 +44,31 @@ public class MovieServiceImpl implements MovieService {
 
         return movie;
     }
+
+    /**
+     * 根据页号查出所有数据(PageInfo 对象)
+     *
+     * @param pageNo
+     * @return
+     */
+    @Override
+    public PageInfo<Movie> selectAllByPageNo(Integer pageNo) {
+        //每页十条数据
+        PageHelper.startPage(pageNo,10);
+        //pageInfo 内部会自动分页处理
+        PageInfo<Movie> moviePageInfo = new PageInfo<>(movieMapper.selectAll());
+
+        return moviePageInfo;
+    }
+
+    /**
+     * 查询所有movie 数据
+     *
+     * @return
+     */
+    @Override
+    public List<Movie> selectAll() {
+        return movieMapper.selectAll();
+    }
 }
+
